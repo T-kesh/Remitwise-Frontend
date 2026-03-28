@@ -31,8 +31,10 @@ import { AccountSection } from "@/components/AccountSection";
 import SettingsHeader from "@/components/SettingsHeader";
 import PreferencesRow from "@/components/PreferencesRow";
 import SecuritySection from "@/components/SecuritySection";
+import { useDensity } from "@/lib/context/DensityContext";
 
 export default function SettingsPage() {
+  const { density, setDensity } = useDensity();
   const [notifications, setNotifications] = useState({
     billReminders: true,
     paymentConfirmations: true,
@@ -196,6 +198,28 @@ export default function SettingsPage() {
                     <option>Dark</option>
                     <option>Light</option>
                     <option>System</option>
+                  </select>
+                  <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none opacity-50">
+                    <ChevronDown className="w-5 h-5 text-gray-300" />
+                  </div>
+                </div>
+              }
+            />
+
+            {/* Density Row */}
+            <PreferencesRow
+              icon={<Zap className="w-5 h-5 text-blue-400" />}
+              title="Display Density"
+              subtitle="Adjust the spacing of tables and lists"
+              rightContent={
+                <div className="relative">
+                  <select
+                    className="w-full bg-[#FFFFFF0D] text-white text-sm rounded-lg px-4 py-2 pr-8 appearance-none border border-zinc-800 focus:outline-none focus:border-[#FF4500]"
+                    value={density}
+                    onChange={(e) => setDensity(e.target.value as 'comfortable' | 'compact')}
+                  >
+                    <option value="comfortable">Comfortable</option>
+                    <option value="compact">Compact</option>
                   </select>
                   <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none opacity-50">
                     <ChevronDown className="w-5 h-5 text-gray-300" />
