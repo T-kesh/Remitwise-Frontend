@@ -4,9 +4,8 @@
 import { useState } from "react";
 import { FilterIcon, Download } from "lucide-react";
 import TransactionHistoryItem, { Transaction } from "@/components/Dashboard/TransactionHistoryItem";
-import TransactionHistoryHeader from "../dashboard/transaction-history/components/transaction-history-header";
-import TransactionHistorySearchInput from "../dashboard/transaction-history/components/transaction-history-search-input";
-import Button from "../dashboard/transaction-history/components/transaction-history-button";
+import { useRouter } from "next/navigation";
+import { useDensity } from "@/lib/context/DensityContext";
 
 const allTransactions: Transaction[] = [
     {
@@ -122,7 +121,10 @@ const allTransactions: Transaction[] = [
 ];
 
 export default function TransactionsPage() {
-    const [searchTerm, setSearchTerm] = useState("");
+    const router = useRouter();
+    const { density } = useDensity();
+
+    const [searchQuery, setSearchQuery] = useState("");
 
     const filteredTransactions = allTransactions.filter((transaction) => {
         const query = searchTerm.toLowerCase();
@@ -144,9 +146,33 @@ export default function TransactionsPage() {
         alert("Export functionality coming soon!");
     };
 
-    return (
-        <main className="w-full min-h-screen bg-[#010101] font-inter">
-            <TransactionHistoryHeader transactions={filteredTransactions.length} />
+                        {/* Right Side Brand */}
+                        <Link href="/" className="flex items-center gap-3">
+                            <div className="w-8 md:w-10 h-8 md:h-10 flex items-center justify-center">
+                                <Image src="/logo.svg" alt="RemitWise" width={40} height={40} className="w-8 md:w-10 h-8 md:h-10" />
+                            </div>
+                            <span className="text-white text-xl font-bold hidden md:block">RemitWise</span>
+                        </Link>
+                    </div>
+                </div>
+            </header>
+
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                {/* Filter Bar Container */}
+                <div className="bg-[#141414] border border-[#FFFFFF14] bg-gradient-to-t from-[#0F0F0F] to-[#0A0A0A] rounded-2xl p-4 mb-8 flex flex-col md:flex-row gap-4 items-center justify-between">
+                    {/* Search Input */}
+                    <div className="relative w-full">
+                        <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <Search className="h-5 w-5 text-gray-500" />
+                        </div>
+                        <input
+                            type="text"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="block w-full pl-10 pr-3 py-2.5 border border-[#FFFFFF14] rounded-xl leading-5 bg-[#FFFFFF0D] text-gray-300 placeholder-gray-500 focus:outline-none focus:bg-[#1A1A1A] focus:border-[#FF4B26] focus:ring-1 focus:ring-[#FF4B26] sm:text-sm transition-colors"
+                            placeholder="Search by ID, recipient, or transaction hash..."
+                        />
+                    </div>
 
             <div className="mx-4 md:mx-20 mt-10 pb-10">
                 <div className="flex flex-col sm:flex-row justify-center gap-0 sm:gap-4 items-center border border-[#FFFFFF14] bg-gradient-to-b from-[#0F0F0F] to-[#0A0A0A] rounded-2xl py-6 px-4">
@@ -161,10 +187,15 @@ export default function TransactionsPage() {
                     </div>
                 </div>
 
-                <div className="mt-8 space-y-4">
+                {/* Transactions List */}
+                <div className={density === 'compact' ? "space-y-1" : "space-y-2.5"}>
                     {filteredTransactions.length > 0 ? (
                         filteredTransactions.map((transaction) => (
-                            <TransactionHistoryItem key={transaction.id} transaction={transaction} />
+                            <TransactionHistoryItem 
+                                key={transaction.id} 
+                                transaction={transaction} 
+                                density={density}
+                            />
                         ))
                     ) : (
                         <div className="text-center py-12 text-gray-400">
